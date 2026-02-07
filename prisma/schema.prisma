@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Place {
+  id                String   @id @default(cuid())
+  name_ar           String
+  name_en           String
+  category          String   // CAFE | RESTAURANT
+  district          String
+  lat               Float
+  lng               Float
+  kids_friendly     Boolean  @default(false)
+  stroller_friendly Boolean  @default(false)
+  prayer_room       Boolean  @default(false)
+  parking_ease      String   @default("MEDIUM") // EASY | MEDIUM | HARD
+  hours_json        String?  // nullable JSON string
+  is_active         Boolean  @default(true)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  signals    Signal[]
+  prediction Prediction?
+
+  @@unique([name_ar, district, category])
+  @@index([category])
+  @@index([district])
+  @@index([lat, lng])
+  @@index([is_active])
+}
+
+model Signal {
+  id          String   @id @default(cuid())
+  place_id    String
+  type        String   // CHECKIN | VIEW | NAVIGATE | SAVE
+  crowd_level String?  // LOW | MEDIUM | HIGH
+  wait_band   String?  // 0-10 | 10-20 | 20-40 | 40+
+  user_hash   String
+  weight      Float    @default(1.0)
+  created_at  DateTime @default(now())
+
+  place Place @relation(fields: [place_id], references: [id])
+
+  @@index([place_id])
+  @@index([created_at])
+}
+
+model Prediction {
+  place_id         String   @id
+  now_crowd_level  String   @default("MEDIUM") // LOW | MEDIUM | HIGH
+  now_wait_band    String   @default("10-20")  // 0-10 | 10-20 | 20-40 | 40+
+  confidence       String   @default("LOW")    // LOW | MEDIUM | HIGH
+  confidence_score Float    @default(0.0)
+  last_signal_at   DateTime?
+  forecast_json    String   @default("[]")     // JSON array of 6 hourly entries
+  best_windows_json String  @default("[]")     // JSON array of best windows
+  generated_at     DateTime @default(now())
+
+  place Place @relation(fields: [place_id], references: [id])
+}

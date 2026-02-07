@@ -1,0 +1,32 @@
+{
+  "name": "riyadh-demand-loop",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "setup": "npx prisma generate && npx prisma migrate deploy && npm run seed && npm run recompute",
+    "seed": "node scripts/seed.mjs",
+    "recompute": "node scripts/recompute.mjs",
+    "verify": "node scripts/verify.mjs",
+    "postinstall": "npx prisma generate"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@prisma/client": "^5.15.0",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.1",
+    "csv-parse": "^5.5.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.15.0",
+    "@types/node": "^20.12.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/leaflet": "^1.9.12",
+    "typescript": "^5.4.0"
+  }
+}
