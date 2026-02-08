@@ -1,6 +1,17 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { Tokens } from '../lib/ui/tokens';
+import {
+  crowdBadgeClass,
+  crowdDotClass,
+  crowdLabel,
+  waitPillClass,
+  confidenceLabel,
+  confidenceClass,
+  bestTimeText,
+  bestTimeBadgeClass,
+} from '../lib/ui-helpers';
 
 interface TrendingItem {
   rank: number;
@@ -19,18 +30,8 @@ interface TrendingItem {
   bestTime: { start: string; end: string } | null;
 }
 
-function toRiyadhTime(utc: string): string {
-  try {
-    return new Date(utc).toLocaleTimeString('en-US', {
-      timeZone: 'Asia/Riyadh',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
-  } catch {
-    return utc;
-  }
-}
+const selectClass = `${Tokens.input.base} ${Tokens.input.focus} w-auto`;
+const checkboxClass = 'rounded border-[rgb(var(--border))] accent-[rgb(var(--primary))]';
 
 export default function TrendingPage() {
   const [items, setItems] = useState<TrendingItem[]>([]);
@@ -70,120 +71,140 @@ export default function TrendingPage() {
   }, [fetchTrending]);
 
   return (
-    <div>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: 16 }}>
+    <div className={Tokens.layout.section}>
+      <h1 className={Tokens.text.title}>
         Trending Now
       </h1>
 
-      <div className="filters-bar">
-        <div className="filter-group">
-          <label>Category</label>
-          <select
-            value={filters.category}
-            onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-          >
-            <option value="">All</option>
-            <option value="cafe">Cafe</option>
-            <option value="restaurant">Restaurant</option>
-          </select>
-        </div>
+      <div className={`${Tokens.layout.card} p-4 sm:p-5`}>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <label className={`${Tokens.text.caption} font-semibold !text-[rgb(var(--text))]`}>Category</label>
+            <select
+              value={filters.category}
+              onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+              data-testid="select-category"
+              className={selectClass}
+            >
+              <option value="">All</option>
+              <option value="cafe">Cafe</option>
+              <option value="restaurant">Restaurant</option>
+            </select>
+          </div>
 
-        <div className="filter-group">
-          <label>Open Now</label>
-          <select
-            value={filters.openNow}
-            onChange={(e) => setFilters({ ...filters, openNow: e.target.value })}
-          >
-            <option value="">Any</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-        </div>
+          <div className="flex items-center gap-2">
+            <label className={`${Tokens.text.caption} font-semibold !text-[rgb(var(--text))]`}>Open Now</label>
+            <select
+              value={filters.openNow}
+              onChange={(e) => setFilters({ ...filters, openNow: e.target.value })}
+              data-testid="select-open-now"
+              className={selectClass}
+            >
+              <option value="">Any</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
 
-        <div className="filter-group">
-          <input
-            type="checkbox"
-            id="kids"
-            checked={filters.kids}
-            onChange={(e) => setFilters({ ...filters, kids: e.target.checked })}
-          />
-          <label htmlFor="kids">Kids</label>
-        </div>
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={filters.kids}
+              onChange={(e) => setFilters({ ...filters, kids: e.target.checked })}
+              data-testid="checkbox-kids"
+              className={checkboxClass}
+            />
+            <span className="text-xs font-medium text-[rgb(var(--text2))]">Kids</span>
+          </label>
 
-        <div className="filter-group">
-          <input
-            type="checkbox"
-            id="stroller"
-            checked={filters.stroller}
-            onChange={(e) => setFilters({ ...filters, stroller: e.target.checked })}
-          />
-          <label htmlFor="stroller">Stroller</label>
-        </div>
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={filters.stroller}
+              onChange={(e) => setFilters({ ...filters, stroller: e.target.checked })}
+              data-testid="checkbox-stroller"
+              className={checkboxClass}
+            />
+            <span className="text-xs font-medium text-[rgb(var(--text2))]">Stroller</span>
+          </label>
 
-        <div className="filter-group">
-          <input
-            type="checkbox"
-            id="prayerRoom"
-            checked={filters.prayerRoom}
-            onChange={(e) => setFilters({ ...filters, prayerRoom: e.target.checked })}
-          />
-          <label htmlFor="prayerRoom">Prayer Room</label>
-        </div>
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={filters.prayerRoom}
+              onChange={(e) => setFilters({ ...filters, prayerRoom: e.target.checked })}
+              data-testid="checkbox-prayer"
+              className={checkboxClass}
+            />
+            <span className="text-xs font-medium text-[rgb(var(--text2))]">Prayer Room</span>
+          </label>
 
-        <div className="filter-group">
-          <label>Parking</label>
-          <select
-            value={filters.parkingEaseMin}
-            onChange={(e) => setFilters({ ...filters, parkingEaseMin: e.target.value })}
-          >
-            <option value="">Any</option>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium+</option>
-            <option value="hard">Any (incl. Hard)</option>
-          </select>
+          <div className="flex items-center gap-2">
+            <label className={`${Tokens.text.caption} font-semibold !text-[rgb(var(--text))]`}>Parking</label>
+            <select
+              value={filters.parkingEaseMin}
+              onChange={(e) => setFilters({ ...filters, parkingEaseMin: e.target.value })}
+              data-testid="select-parking"
+              className={selectClass}
+            >
+              <option value="">Any</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium+</option>
+              <option value="hard">Any (incl. Hard)</option>
+            </select>
+          </div>
         </div>
       </div>
 
       {loading ? (
-        <div className="message">Loading...</div>
+        <div className="text-center py-16 text-[rgb(var(--muted))]">Loading...</div>
       ) : items.length === 0 ? (
-        <div className="message">No trending places found.</div>
+        <div className="text-center py-16 text-[rgb(var(--muted))]">No trending places found.</div>
       ) : (
-        <div className="cards-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {items.map((item) => (
-            <a key={item.place.id} href={`/place/${item.place.id}`} className="card-link">
-              <div className="card">
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                  <span className="badge-rank">{item.rank}</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>
+            <a
+              key={item.place.id}
+              href={`/place/${item.place.id}`}
+              data-testid={`card-trending-${item.rank}`}
+              className="block no-underline group"
+            >
+              <div className={`${Tokens.layout.card} ${Tokens.layout.cardHover} p-4 sm:p-5`}>
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[rgb(var(--primary))] text-white text-xs font-bold flex items-center justify-center">
+                    {item.rank}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className={`${Tokens.text.cardTitle} truncate`}>
                       {item.place.nameAr}
                     </div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                    <div className={`${Tokens.text.caption} mt-0.5`}>
                       {item.place.district}
                     </div>
                   </div>
-                  <span className="badge badge-category">{item.place.category}</span>
-                </div>
-
-                <div className="badges-row">
-                  <span className={`badge badge-crowd-${item.demand.crowdLevel}`}>
-                    Crowd: {item.demand.crowdLevel}
-                  </span>
-                  <span className="badge badge-wait">
-                    Wait: {item.demand.waitBand} min
-                  </span>
-                  <span className={`badge badge-confidence-${item.demand.confidence}`}>
-                    Conf: {item.demand.confidence}
+                  <span className={`${Tokens.pill.base} ${Tokens.pill.category} flex-shrink-0`}>
+                    {item.place.category}
                   </span>
                 </div>
 
-                {item.bestTime && (
-                  <div className="best-time">
-                    Best time: {toRiyadhTime(item.bestTime.start)} -{' '}
-                    {toRiyadhTime(item.bestTime.end)}
-                  </div>
-                )}
+                <div className="flex flex-wrap items-center gap-1.5 mt-3">
+                  <span className={crowdBadgeClass(item.demand.crowdLevel)}>
+                    <span className={crowdDotClass(item.demand.crowdLevel)}></span>
+                    {crowdLabel(item.demand.crowdLevel)}
+                  </span>
+                  <span className={waitPillClass()}>
+                    {item.demand.waitBand} min
+                  </span>
+                  <span className={confidenceClass(item.demand.confidence)}>
+                    {confidenceLabel(item.demand.confidence)}
+                  </span>
+                </div>
+
+                <div className="mt-2.5">
+                  <span className={bestTimeBadgeClass(item.bestTime)}>
+                    {bestTimeText(item.bestTime)}
+                  </span>
+                </div>
               </div>
             </a>
           ))}

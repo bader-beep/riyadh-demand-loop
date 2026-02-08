@@ -12,6 +12,37 @@ Riyadh Demand Loop is a real-time crowd and wait-time prediction platform for ca
 - Family-friendly filters (kids, stroller, prayer room, parking ease)
 - Open-now filtering based on parsed hours data
 
+## Recent Changes
+
+### Design System Pack (Feb 2026)
+- **Font pairing**: Inter (Latin) + Cairo (Arabic) via `next/font/google` — weights 400/500/600
+  - Fallback stack: system-ui, -apple-system, Segoe UI, Roboto, sans-serif
+  - CSS variables: `--font-latin` (Inter), `--font-arabic` (Cairo)
+- **Color palette**: Apple-inspired neutral base + blue accent
+  - Light: `--primary: 0 122 255` (Apple blue), surfaces white/zinc
+  - Dark: `--primary: 10 132 255`, surfaces zinc/neutral dark
+  - State colors as CSS variables: `--success`, `--warning`, `--danger` (Apple-like green/orange/red)
+- **Shapes**: rounded-2xl for cards/panels, rounded-full for pills, rounded-xl for inputs/buttons
+- **Surfaces**: 1px borders + soft shadow `shadow-[0_1px_2px_rgba(0,0,0,0.04)]`, dark mode removes shadows
+  - Card hover: `shadow-[0_6px_16px_rgba(0,0,0,0.06)]` (light only)
+- **Motion**: `transition-colors duration-150 ease-out`, `active:scale-[0.98]` for tap feedback
+- **Tokens file**: `src/lib/ui/tokens.ts` exports layout, text, surface, button, input, pill, demand tokens
+  - All tokens use CSS variable-based colors (`rgb(var(--name))`) — never raw hex
+- **Theme**: light/dark/system toggle with localStorage persistence, .dark class on `<html>`
+- **RTL**: `<html dir="rtl" lang="ar">` by default; numerals remain readable
+- **Backdrop-blur navbar**: sticky nav with `backdrop-blur-xl` and semi-transparent background
+
+### Design Token Reference
+```
+Tokens.layout.card     → rounded-2xl border + surface bg + subtle shadow
+Tokens.text.title      → text-2xl font-semibold tracking-tight leading-tight
+Tokens.text.body       → text-sm leading-6
+Tokens.text.caption    → text-xs leading-5 text-muted
+Tokens.button.primary  → blue bg, white text, rounded-xl, hover + active:scale
+Tokens.pill.base       → rounded-full px-3 py-1 text-xs font-medium
+Tokens.demand.low/med/high → CSS-var-based success/warning/danger colors
+```
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -55,6 +86,8 @@ The `shared/schema.ts` file uses **Drizzle ORM with PostgreSQL** for a basic use
 - **`rateLimit.ts`** — In-memory rate limiter for check-in endpoint
 - **`constants.ts`** — Enum mappings (crowd levels, wait bands, parking ease) and API/DB conversion functions
 - **`logger.ts`** — Simple structured logger
+- **`ui/tokens.ts`** — Design system tokens: layout, text, surface, button, input, pill, demand
+- **`ui-helpers.ts`** — UI helper functions: crowd badges, wait pills, confidence labels, time formatting, family chips
 
 ### Scripts
 
@@ -93,13 +126,17 @@ The `shared/schema.ts` file uses **Drizzle ORM with PostgreSQL** for a basic use
 - **react-leaflet 4.2** — React bindings for Leaflet
 - **OpenStreetMap tiles** — Map tile source (no API key needed)
 
+### Fonts (via next/font/google)
+- **Inter** — Latin font (weights 400/500/600)
+- **Cairo** — Arabic font (weights 400/500/600)
+
 ### Data Processing
 - **csv-parse 5.6** — CSV parsing for seed data import
 
 ### UI Component Libraries (from template)
 - **Radix UI** — Accessible primitives (dialog, dropdown, tabs, etc.)
 - **shadcn/ui** — Pre-built component set in `client/src/components/ui/`
-- **Tailwind CSS** — Utility-first styling
+- **Tailwind CSS 3.4** — Utility-first styling
 - **class-variance-authority** — Component variant management
 - **Lucide React** — Icon library
 - **@tanstack/react-query** — Data fetching/caching (template layer)

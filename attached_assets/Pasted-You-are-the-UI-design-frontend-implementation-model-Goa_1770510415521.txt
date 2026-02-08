@@ -1,0 +1,114 @@
+You are the UI design + frontend implementation model.
+
+Goal: Make the UI smooth, modern, and professional using Tailwind, with:
+- Light + Dark mode
+- Arabic-first typography (default Arabic font stack)
+- Tailwind-only (no new UI library unless absolutely necessary)
+Do NOT change backend logic, APIs, or database.
+
+REQUIREMENTS
+1) Theme system
+- Implement light/dark using Tailwind dark mode (`dark:` classes).
+- Use CSS variables for colors in globals.css, then map Tailwind utilities to variables.
+- Default theme: system preference; allow manual toggle (sun/moon button) that persists in localStorage.
+
+2) Arabic-first typography
+- Set default font-family to an Arabic-optimized stack.
+- Must render Arabic well, with clean Latin fallback.
+- Use `dir="rtl"` at app root, but keep numbers readable (don’t break LTR numerals).
+
+3) Design tokens (use these exact tokens, in BOTH themes)
+Create `src/lib/ui/tokens.ts`:
+
+export const Tokens = {
+  layout: {
+    page: "max-w-6xl mx-auto px-4 sm:px-6",
+    section: "space-y-6",
+    card: "rounded-2xl border shadow-sm transition duration-200 ease-out",
+    cardHover: "hover:shadow-md",
+  },
+  text: {
+    title: "text-2xl font-semibold tracking-tight",
+    section: "text-sm font-semibold",
+    cardTitle: "text-base font-semibold",
+    body: "text-sm",
+    caption: "text-xs",
+  },
+  pill: {
+    base: "inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ring-1",
+    bestTime: "bg-indigo-500/10 text-indigo-600 ring-indigo-500/20",
+    waitBand: "bg-zinc-500/10 text-zinc-600 ring-zinc-500/20",
+  },
+  focus: {
+    ring: "focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:ring-offset-2 focus:ring-offset-[var(--bg)]",
+  },
+  status: {
+    low: "bg-emerald-500/10 text-emerald-600 ring-emerald-500/20",
+    medium: "bg-amber-500/10 text-amber-700 ring-amber-500/20",
+    high: "bg-rose-500/10 text-rose-600 ring-rose-500/20",
+  },
+};
+
+4) Color system (CSS variables)
+In `src/app/globals.css` (or equivalent), define:
+- Light theme variables under `:root`
+- Dark theme variables under `.dark`
+Use these variables:
+--bg, --surface, --surface2, --border, --text, --text2, --muted
+--primary, --primary2
+
+Exact values:
+LIGHT (:root)
+--bg: 248 250 252;           /* slate-50-ish */
+--surface: 255 255 255;
+--surface2: 244 244 245;     /* zinc-100-ish */
+--border: 228 228 231;       /* zinc-200-ish */
+--text: 24 24 27;            /* zinc-900-ish */
+--text2: 63 63 70;           /* zinc-700-ish */
+--muted: 113 113 122;        /* zinc-500-ish */
+--primary: 79 70 229;        /* indigo-600-ish */
+--primary2: 67 56 202;       /* indigo-700-ish */
+
+DARK (.dark)
+--bg: 9 9 11;                /* zinc-950-ish */
+--surface: 24 24 27;         /* zinc-900-ish */
+--surface2: 39 39 42;        /* zinc-800-ish */
+--border: 63 63 70;          /* zinc-700-ish */
+--text: 244 244 245;         /* zinc-100-ish */
+--text2: 212 212 216;        /* zinc-300-ish */
+--muted: 161 161 170;        /* zinc-400-ish */
+--primary: 99 102 241;       /* indigo-500-ish */
+--primary2: 129 140 248;     /* indigo-400-ish */
+
+Then apply them via Tailwind arbitrary values like:
+bg-[rgb(var(--bg))]
+text-[rgb(var(--text))]
+border-[rgb(var(--border))]
+
+5) Global base styling
+- Body background uses --bg
+- Cards use --surface and border --border
+- Text hierarchy uses --text, --text2, --muted
+- Use subtle shadows only (shadow-sm; dark:shadow-none or very subtle)
+
+6) Demand UI
+- Crowd badge colors use Tokens.status (low/medium/high)
+- Wait band pill uses Tokens.pill.waitBand
+- Best time badge uses Tokens.pill.bestTime
+- Confidence microtext uses muted color
+
+7) Small rule (premium feel)
+- Add tasteful dividers: `divide-y divide-[rgb(var(--border))]/40` where lists exist
+- Add subtle hover for interactive rows
+- Use `backdrop-blur` lightly ONLY on sticky filter header (if present), e.g.:
+  `bg-[rgb(var(--bg))]/70 backdrop-blur supports-[backdrop-filter]:bg-[rgb(var(--bg))]/60`
+
+DELIVERABLES
+A) Implement theme toggle component + persistence (localStorage key: "theme" with values "light" | "dark" | "system")
+B) Implement Arabic-first typography globally:
+   - Set font family stack to: "IBM Plex Sans Arabic", "Tajawal", "Noto Kufi Arabic", system-ui, sans-serif
+   - If you choose to import a Google Font, do it via next/font/google and keep it minimal.
+C) Apply tokens across pages/components (Trending card, Place detail, Filters, Map panel, Buttons, Inputs)
+D) Provide list of files changed and a short explanation.
+
+Do NOT invent new features beyond theming + typography + styling.

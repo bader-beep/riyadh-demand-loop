@@ -1,0 +1,144 @@
+You are the UI design system + frontend implementation model.
+
+Context:
+- App: Riyadh Demand Loop (map-centric like Apple Maps)
+- UI: bilingual (Arabic/English) based on user choice
+- Default: Arabic-first (RTL when Arabic), but must handle English cleanly (LTR)
+- Platforms: mobile + desktop
+- Stack: Next.js + Tailwind (no new UI library unless absolutely necessary)
+- Goal: smooth, modern, neutral/classy, Apple-inspired (not copy, just same polish)
+- Do NOT change backend logic, APIs, or database.
+
+TASK
+Implement a complete “Design System Pack” and apply it consistently across the UI:
+1) Fonts (Arabic + Latin pairing)
+2) Light/Dark color palette (neutral base + single accent)
+3) Shapes (radius standards)
+4) Transitions/motion (durations + easing)
+5) Tokenized Tailwind usage so developers never paste raw hex in components
+
+FONT REQUIREMENTS (from research)
+Preferred pairing (pick one and implement fully):
+Option A (recommended, free): Inter (Latin) + Cairo (Arabic)
+Option B (more professional): IBM Plex Sans + IBM Plex Sans Arabic
+- Implement via next/font/google.
+- Provide a safe fallback stack: system-ui, -apple-system, Segoe UI, Roboto, sans-serif.
+- Ensure Arabic renders cleanly and English remains crisp.
+- Use minimal weights: 400/500/600 only (avoid too many).
+- Set global typography scale:
+  - Page title: text-2xl font-semibold tracking-tight leading-tight
+  - Card title: text-base font-semibold leading-snug
+  - Body: text-sm leading-6
+  - Caption: text-xs text-muted leading-5
+
+DIRECTION (RTL/LTR)
+- Arabic mode: <html dir="rtl" lang="ar">
+- English mode: <html dir="ltr" lang="en">
+- Must NOT break numerals; keep numbers readable.
+- Map view can remain LTR if RTL breaks controls, but the surrounding UI should still be RTL when Arabic.
+
+COLOR SYSTEM (from research)
+Use CSS variables for theming + Tailwind arbitrary rgb(var()) usage.
+In globals.css define:
+
+LIGHT (:root)
+--bg: 248 250 252
+--surface: 255 255 255
+--surface2: 244 244 245
+--border: 228 228 231
+--text: 24 24 27
+--text2: 63 63 70
+--muted: 113 113 122
+--primary: 0 122 255        (Apple-like blue)
+--primary2: 10 132 255      (alt blue for emphasis if needed)
+
+DARK (.dark)
+--bg: 9 9 11
+--surface: 24 24 27
+--surface2: 39 39 42
+--border: 63 63 70
+--text: 244 244 245
+--text2: 212 212 216
+--muted: 161 161 170
+--primary: 10 132 255
+--primary2: 0 122 255
+
+State colors (Apple-like, subtle):
+- success: #34C759 (light), #30D158 (dark)
+- warning: #FF9500 (light), #FF9F0A (dark)
+- danger:  #FF3B30 (light), #FF453A (dark)
+
+Implement these states as CSS variables too (rgb triplets).
+
+TAILWIND APPLICATION RULE
+Never hardcode hex in component classes.
+Always use:
+- bg-[rgb(var(--bg))]
+- bg-[rgb(var(--surface))]
+- text-[rgb(var(--text))]
+- border-[rgb(var(--border))]
+and so on.
+
+SHAPES (radius standards)
+- Cards/panels: rounded-xl (12px) or rounded-2xl (16px) consistently (choose one for primary cards; I prefer rounded-2xl for premium feel)
+- Pills/chips/badges: rounded-full
+- Inputs/buttons: rounded-xl
+- Modals/sheets: rounded-2xl
+
+SURFACES (Apple-like subtle depth)
+- Use 1px borders and very soft shadows:
+  - shadow: shadow-[0_1px_2px_rgba(0,0,0,0.04)] in light
+  - in dark: reduce shadow or none; rely on border and surface contrast
+- Card hover: shadow-[0_6px_16px_rgba(0,0,0,0.06)] (light only) + transition
+
+MOTION (from research)
+- Use micro-interactions only (no gimmicks).
+- Default transitions:
+  - transition-colors duration-150 ease-out
+  - transition-shadow duration-200 ease-out
+  - Modals/panels: duration-200 to 300 ease-in-out
+- Tap feedback:
+  - active:scale-[0.98] (no bounce)
+
+TOKENS FILE
+Create: src/lib/ui/tokens.ts
+Export an object like:
+
+export const Tokens = {
+  layout: { page, section, card, cardHover, divider },
+  text: { title, cardTitle, body, caption },
+  surface: { bg, card, card2, border },
+  button: { primary, secondary, ghost },
+  input: { base, focus },
+  pill: { base, bestTime, waitBand },
+  demand: { low, medium, high, dotLow, dotMed, dotHigh }
+};
+
+All tokens must reference the CSS variables and follow the palette.
+
+THEME TOGGLE
+- Add a theme toggle (sun/moon) in the top bar.
+- Persist in localStorage key "theme": "light" | "dark" | "system"
+- Default: "system"
+- Apply .dark class on <html> when needed.
+
+APPLY SYSTEM ACROSS UI
+Update these surfaces/components:
+- Trending cards (crowd badge, wait band pill, confidence label, best time badge)
+- Place detail header + sections
+- Filter chips (family icons)
+- Buttons + inputs everywhere
+- Map container wrapper + side panel styling
+- Add tasteful dividers: divide-y border-[rgb(var(--border))]/40
+
+DELIVERABLES
+1) List of files changed
+2) tokens.ts content
+3) globals.css updates (variables + base typography)
+4) Updated components applying tokens
+5) Quick manual verification checklist for light/dark + RTL/LTR
+
+Constraints:
+- No new backend work.
+- No new features beyond styling + theme toggle + rtl/ltr switching.
+- Keep UI minimal, readable, premium.

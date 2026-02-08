@@ -1,0 +1,84 @@
+You are the UI design + frontend implementation model.
+
+Goal: Make the UI smooth, modern, and professional using Tailwind.
+Do NOT change backend logic, APIs, or database.
+
+Implement a consistent design system with:
+1) Color tokens (Tailwind classes), including:
+   - Backgrounds
+   - Surfaces/cards
+   - Text hierarchy (primary/secondary/muted)
+   - Borders/dividers
+   - Primary action color
+   - Success/Warning/Danger (for crowd levels)
+2) Typography system:
+   - Font family
+   - Font sizes for headings/body/captions
+   - Consistent line-height and letter spacing
+3) Spacing + layout rules:
+   - Standard paddings/margins
+   - Card spacing
+   - Section spacing
+4) Component styling for:
+   - Buttons (primary/secondary/ghost)
+   - Badges/pills (crowd, wait band, best time)
+   - Filter chips (family icons)
+   - Cards (Trending, Alternative)
+   - Inputs (search/filter)
+   - Map panel container (if exists)
+
+Design constraints:
+- Use Tailwind only (no new UI library).
+- Prefer neutral palette with one primary accent.
+- Use subtle borders + soft shadows.
+- Rounded corners should be consistent (e.g., rounded-xl / rounded-2xl).
+- Maintain excellent contrast and readability.
+
+Deliverables:
+A) Add a “Design Tokens” section to globals (or a dedicated file) defining reusable class strings.
+B) Apply tokens across: Trending list, Place detail, Filters, Map UI.
+C) Ensure mobile-first spacing and typography.
+D) Provide list of files changed and brief notes.
+
+Use these exact token targets:
+
+COLOR TOKENS (Tailwind classes):
+- App background: bg-zinc-50
+- Surface/card: bg-white
+- Surface subtle: bg-zinc-100/60
+- Border: border-zinc-200
+- Text primary: text-zinc-900
+- Text secondary: text-zinc-600
+- Text muted: text-zinc-500
+- Primary accent: indigo
+  - Primary text/links: text-indigo-700
+  - Primary bg: bg-indigo-600
+  - Primary hover: hover:bg-indigo-700
+  - Primary ring: ring-indigo-200
+- Focus ring (inputs/buttons): focus:ring-2 focus:ring-indigo-200 focus:ring-offset-2
+
+STATUS COLORS (for crowd badges):
+- Low: bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200
+- Medium: bg-amber-50 text-amber-800 ring-1 ring-amber-200
+- High: bg-rose-50 text-rose-700 ring-1 ring-rose-200
+
+TYPOGRAPHY (Tailwind classes):
+- Page title: text-2xl font-semibold tracking-tight text-zinc-900
+- Section title: text-sm font-semibold text-zinc-900
+- Card title: text-base font-semibold text-zinc-900
+- Body: text-sm text-zinc-600
+- Caption: text-xs text-zinc-500
+
+SPACING + RADIUS:
+- Page container: max-w-6xl mx-auto px-4 sm:px-6
+- Section spacing: space-y-6
+- Card padding: p-4 sm:p-5
+- Card gap: gap-3
+- Radius: rounded-2xl for main cards; rounded-full for pills
+- Shadow: shadow-sm (default), hover: hover:shadow-md transition
+
+ANIMATION:
+- Use transition-colors and transition-shadow, duration-200, ease-out
+- No heavy animations
+
+Apply this system consistently to the whole UI.
