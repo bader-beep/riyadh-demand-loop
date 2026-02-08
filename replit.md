@@ -14,6 +14,16 @@ Riyadh Demand Loop is a real-time crowd and wait-time prediction platform for ca
 
 ## Recent Changes
 
+### Trending Page Redesign (Feb 2026)
+- **List-first layout**: Header with "Trending now" + subtitle, category segmented control, filters button, featured row, main grid
+- **SegmentedControl** (`src/components/SegmentedControl.tsx`): Reusable animated segmented control with sliding indicator, RTL-aware, ResizeObserver for reflow
+- **FilterSheet** (`src/components/FilterSheet.tsx`): Side panel (desktop) / bottom sheet (mobile) with Open Now toggle, Family chip toggles, Parking segmented control, Clear all + Apply
+- **TrendingCard + SkeletonCard** (`src/components/TrendingCard.tsx`): Full card anatomy (name line-clamp-2 + category pill, district, crowd badge + wait pill, confidence + last updated, best time badge, family icon chips). Skeleton loading with pulse animation
+- **Featured row**: Top 3 trending in 3-column grid with larger cards
+- **Main grid**: 2-column desktop, 1-column mobile with "View more" pagination
+- **Empty state**: "No results found" with Clear all / Relax filters actions
+- **UI-only change**: No backend/API modifications
+
 ### Design System Pack (Feb 2026)
 - **Font pairing**: Inter (Latin) + Cairo (Arabic) via `next/font/google` — weights 400/500/600
   - Fallback stack: system-ui, -apple-system, Segoe UI, Roboto, sans-serif

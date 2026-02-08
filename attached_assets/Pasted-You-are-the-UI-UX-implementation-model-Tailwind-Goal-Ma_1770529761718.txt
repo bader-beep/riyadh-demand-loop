@@ -1,0 +1,66 @@
+You are the UI/UX implementation model (Tailwind).
+
+Goal: Make the app feel premium and Apple-Maps-like with a list-first home (Trending) experience.
+Constraints:
+- UI-only changes (no backend/APIs/DB changes)
+- Keep light+dark theme and Arabic-first RTL support
+- Maintain clarity and restraint (avoid clutter)
+
+TARGET UX (List-first)
+Home/Trending page should have:
+1) Top header area (clean, minimal):
+   - Page title: “Trending now”
+   - Subtext: “Based on recent activity”
+   - Right side: theme toggle + language toggle (if exists)
+2) Category selector (segmented control):
+   - All | Cafés | Restaurants
+   - Animated indicator (150ms ease-out)
+3) Small filter row:
+   - “Filters” button opens a sheet/panel (do not show all filters inline)
+   - Optional “Compact / Comfortable” density toggle
+4) Featured row:
+   - Top 3 trending items as “Featured” (bigger cards) in a horizontal carousel on mobile, 3-up row on desktop
+5) Main list/grid:
+   - Show next 12–18 items by default
+   - Mobile: 1 column list
+   - Desktop: 2 columns grid
+   - Add “View more” / pagination control (UI-only) to increase limit and load more
+
+CARD DESIGN (Premium / Apple-like)
+Each card must follow consistent anatomy:
+- Row 1: name (clamp to 2 lines) + category pill
+- Row 2: district (muted)
+- Row 3: crowd badge + wait band pill
+- Row 4: confidence micro text + last updated
+- Row 5: Best time badge (highlighted)
+- Row 6: family chips (icons)
+
+Visual rules:
+- Background surface + subtle border + soft shadow (no heavy shadows)
+- Hover: slightly more shadow + border tint
+- Radii: primary cards rounded-2xl; pills rounded-full; inputs/buttons rounded-xl
+- Spacing: p-4 sm:p-5; gaps consistent (gap-2/3)
+- Add skeleton loading states for cards (for fetch states)
+- Empty states: “No results” + actions: Clear filters / Relax filters
+
+FILTER SHEET (Selection categories box)
+When user taps Filters:
+- Open a right-side panel on desktop, bottom sheet on mobile
+- Include:
+  - Kids / Stroller / Prayer chips
+  - Parking ease segmented: Easy | Med | Hard
+  - Open now toggle
+- Keep panel clean with section titles and dividers
+
+MAP ENTRY (Secondary)
+- Add a “Map” button near filters that opens /map (no need to embed map on home)
+
+DELIVERABLES
+- Updated Trending page layout
+- New segmented control component (reusable)
+- Updated card component with skeleton states
+- Filter sheet component with chips + segmented parking
+- List all files changed and brief notes
+
+Do NOT add new features beyond layout/styling controls.
+Do NOT change API payload shapes or backend logic.
