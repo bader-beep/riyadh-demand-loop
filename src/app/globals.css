@@ -34,19 +34,118 @@
   --danger: 255 69 58;
 }
 
+/*
+  Background Canvas Presets
+  Set <html data-canvas="neutral|warm|map|gradient"> to switch backgrounds.
+  Default (missing or "neutral") uses the standard soft neutral canvas.
+  Cards, surfaces, and modals are unaffected — only --bg changes.
+*/
+
+/* --- LIGHT MODE CANVAS PRESETS --- */
+:root,
+[data-canvas="neutral"] { --bg: 248 250 252; }
+[data-canvas="warm"]    { --bg: 250 247 240; }
+[data-canvas="map"]     { --bg: 237 239 242; }
+[data-canvas="gradient"] {
+  --bg: 248 250 252;
+  --canvas-gradient: linear-gradient(168deg, rgb(248 250 252) 0%, rgb(235 237 241) 50%, rgb(245 245 248) 100%);
+}
+
+/* --- DARK MODE CANVAS PRESETS --- */
+.dark,
+.dark[data-canvas="neutral"] { --bg: 9 9 11; }
+.dark[data-canvas="warm"]    { --bg: 18 15 12; }
+.dark[data-canvas="map"]     { --bg: 14 14 18; }
+.dark[data-canvas="gradient"] {
+  --bg: 9 9 11;
+  --canvas-gradient: none;
+}
+
 @layer base {
   body {
     font-family: var(--font-latin), var(--font-arabic), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: rgb(var(--bg));
+    background-image: var(--canvas-gradient, none);
+    background-attachment: fixed;
     color: rgb(var(--text));
     line-height: 1.6;
+  }
+
+  [lang="ar"] body,
+  [dir="rtl"] body {
+    font-family: var(--font-arabic), var(--font-latin), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  [lang="ar"] .card-title,
+  [dir="rtl"] .card-title {
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  [lang="ar"] .page-title,
+  [dir="rtl"] .page-title {
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+  }
+
+  [lang="ar"] .section-label,
+  [dir="rtl"] .section-label {
+    letter-spacing: 0.08em;
+  }
+
+  @media (min-width: 1024px) {
+    aside[data-testid="app-sidebar"] {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+  }
+
+  aside[data-testid="app-sidebar"] {
+    inset-inline-start: 0;
+    transform: translateX(0);
+  }
+  [dir="rtl"] aside[data-testid="app-sidebar"] {
+    transform: translateX(0);
+  }
+  aside[data-testid="app-sidebar"].sidebar-hidden {
+    transform: translateX(-100%);
+  }
+  [dir="rtl"] aside[data-testid="app-sidebar"].sidebar-hidden {
+    transform: translateX(100%);
+  }
+  @media (min-width: 1024px) {
+    aside[data-testid="app-sidebar"].sidebar-hidden {
+      transform: none;
+    }
+    [dir="rtl"] aside[data-testid="app-sidebar"].sidebar-hidden {
+      transform: none;
+    }
   }
 
   ::selection {
     background-color: rgb(var(--primary) / 0.18);
     color: rgb(var(--text));
+  }
+}
+
+.card-hover-lift {
+  transition: box-shadow 0.2s ease-out, transform 0.2s ease-out;
+}
+.card-hover-lift:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+.dark .card-hover-lift:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover-lift:hover {
+    transform: none;
   }
 }
 
@@ -78,6 +177,47 @@
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--surface2)) 0%,
+    rgb(var(--surface2) / 0.4) 40%,
+    rgb(var(--surface2)) 80%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--surface2)) 0%,
+    rgb(var(--surface2) / 0.6) 40%,
+    rgb(var(--surface2)) 80%
+  );
+  background-size: 200% 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .skeleton-shimmer {
+    animation: none;
+  }
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 .leaflet-popup-content-wrapper {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 
 interface SegmentedControlProps {
   options: { value: string; label: string }[];
@@ -17,7 +17,7 @@ export default function SegmentedControl({ options, value, onChange, 'data-testi
     function update() {
       if (!containerRef.current) return;
       const idx = options.findIndex((o) => o.value === value);
-      const buttons = containerRef.current.querySelectorAll<HTMLButtonElement>('[data-segment-btn]');
+      const buttons = containerRef.current.querySelectorAll<HTMLButtonElement>('[role="radio"]');
       if (buttons[idx]) {
         const btn = buttons[idx];
         const container = containerRef.current;
@@ -36,35 +36,79 @@ export default function SegmentedControl({ options, value, onChange, 'data-testi
     return () => ro.disconnect();
   }, [value, options]);
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const isRtl = containerRef.current
+        ? getComputedStyle(containerRef.current).direction === 'rtl'
+        : false;
+      const idx = options.findIndex((o) => o.value === value);
+      let next = idx;
+
+      if (e.key === 'ArrowRight') {
+        next = isRtl
+          ? (idx - 1 + options.length) % options.length
+          : (idx + 1) % options.length;
+      } else if (e.key === 'ArrowLeft') {
+        next = isRtl
+          ? (idx + 1) % options.length
+          : (idx - 1 + options.length) % options.length;
+      } else if (e.key === 'Home') {
+        next = 0;
+      } else if (e.key === 'End') {
+        next = options.length - 1;
+      } else {
+        return;
+      }
+
+      e.preventDefault();
+      onChange(options[next].value);
+
+      requestAnimationFrame(() => {
+        const buttons = containerRef.current?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+        buttons?.[next]?.focus();
+      });
+    },
+    [options, value, onChange]
+  );
+
   return (
     <div
       ref={containerRef}
       data-testid={testId}
-      className="relative inline-flex items-center rounded-xl bg-[rgb(var(--surface2))] p-1"
+      role="radiogroup"
+      aria-label="Category"
+      className="relative inline-flex items-center rounded-full bg-[rgb(var(--surface2))]/80 p-1 border border-[rgb(var(--border))]/30"
     >
       <div
-        className="absolute top-1 rounded-[10px] bg-white dark:bg-[rgba(255,255,255,0.12)] shadow-[0_1px_3px_rgba(0,0,0,0.08)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition-all duration-150 ease-out"
+        className="absolute top-1 rounded-full bg-[rgb(var(--surface))] shadow-[0_1px_3px_rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.1)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.3)] transition-all duration-200 ease-out"
         style={{
           insetInlineStart: `${indicatorStyle.offset}px`,
           width: `${indicatorStyle.width}px`,
           height: 'calc(100% - 8px)',
         }}
+        aria-hidden="true"
       />
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          data-segment-btn
-          data-testid={testId ? `${testId}-${opt.value}` : undefined}
-          onClick={() => onChange(opt.value)}
-          className={`relative z-10 px-4 py-1.5 text-sm font-medium rounded-[10px] transition-colors duration-150 ease-out select-none ${
-            value === opt.value
-              ? 'text-[rgb(var(--text))]'
-              : 'text-[rgb(var(--muted))] hover:text-[rgb(var(--text2))]'
-          }`}
-        >
-          {opt.label}
-        </button>
-      ))}
+      {options.map((opt) => {
+        const isSelected = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            role="radio"
+            aria-checked={isSelected}
+            tabIndex={isSelected ? 0 : -1}
+            data-testid={testId ? `${testId}-${opt.value}` : undefined}
+            onClick={() => onChange(opt.value)}
+            onKeyDown={handleKeyDown}
+            className={`relative z-10 px-5 py-1.5 text-[13px] font-medium rounded-full transition-colors duration-200 ease-out select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--primary))]/40 ${
+              isSelected
+                ? 'text-[rgb(var(--text))]'
+                : 'text-[rgb(var(--muted))] hover:text-[rgb(var(--text2))]'
+            }`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
